@@ -1,15 +1,16 @@
 package com.example.ecopilot.ui.screens
 
-import android.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import com.example.ecopilot.data.SessionManager
 import com.example.ecopilot.network.LoginRequest
 import com.example.ecopilot.network.RetrofitClient
 import kotlinx.coroutines.launch
@@ -37,6 +38,8 @@ fun LoginScreen(
     var cargando by remember { mutableStateOf(false) }
     var mensajeError by remember { mutableStateOf("") }
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val sessionManager = remember { SessionManager(context) }
 
     Column(
         modifier = Modifier
@@ -103,6 +106,14 @@ fun LoginScreen(
                             LoginRequest(email = correo.trim(), password = password)
                         )
                         if (response.isSuccessful) {
+                            val authData = response.body()
+                            if (authData != null) {
+                                sessionManager.guardarSesion(
+                                    token = authData.token,
+                                    nombre = authData.user.name,
+                                    puntos = authData.user.puntos_totales
+                                )
+                            }
                             onLoginExitoso()
                         } else {
                             mensajeError = "Correo o contraseña incorrectos"

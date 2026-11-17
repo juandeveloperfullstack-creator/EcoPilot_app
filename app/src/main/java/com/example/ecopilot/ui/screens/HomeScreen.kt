@@ -5,7 +5,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.ecopilot.data.SessionManager
 
 /**
  * **EcoPilotHomeScreen**: Pantalla principal de la aplicación.
@@ -24,15 +27,27 @@ fun EcoPilotHomeScreen(
     modifier: Modifier = Modifier,
     onCerrarSesion: () -> Unit
 ) {
-    var seccionActual by remember { mutableStateOf("¡Bienvenido a EcoPilot!") }
+    val context = LocalContext.current
+    val sessionManager = remember { SessionManager(context) }
+    val nombreUsuario = remember { sessionManager.obtenerNombre() }
+    val puntosUsuario = remember { sessionManager.obtenerPuntos() }
+
+    var seccionActual by remember { mutableStateOf("¡Listo para reciclar hoy!") }
 
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        // 1. Cabecera de Bienvenida
+        // 1. Cabecera de Bienvenida Personalizada
         item {
+            Text(
+                text = "Hola, $nombreUsuario 👋",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.primary
+            )
+            Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = "Tu planeta, tu misión",
                 style = MaterialTheme.typography.headlineMedium,
@@ -47,7 +62,7 @@ fun EcoPilotHomeScreen(
             Spacer(modifier = Modifier.height(20.dp))
         }
 
-        // 2. Tarjeta de Resumen y Estado
+        // 2. Tarjeta de Resumen y Estado con Puntos Reales
         item {
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -61,8 +76,9 @@ fun EcoPilotHomeScreen(
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "Puntos acumulados: 120 ECOs",
+                        text = "Puntos acumulados: $puntosUsuario ECOs",
                         style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     Spacer(modifier = Modifier.height(4.dp))

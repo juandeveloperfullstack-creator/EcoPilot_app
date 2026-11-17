@@ -6,9 +6,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import com.example.ecopilot.data.SessionManager
 import com.example.ecopilot.network.RegisterRequest
 import com.example.ecopilot.network.RetrofitClient
 import kotlinx.coroutines.launch
@@ -25,6 +27,8 @@ fun RegisterScreen(
     var cargando by remember { mutableStateOf(false) }
     var mensajeError by remember { mutableStateOf("") }
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val sessionManager = remember { SessionManager(context) }
 
     Column(
         modifier = Modifier
@@ -122,6 +126,14 @@ fun RegisterScreen(
                                     )
                                 )
                                 if (response.isSuccessful) {
+                                    val authData = response.body()
+                                    if (authData != null) {
+                                        sessionManager.guardarSesion(
+                                            token = authData.token,
+                                            nombre = authData.user.name,
+                                            puntos = authData.user.puntos_totales
+                                        )
+                                    }
                                     onRegistroExitoso()
                                 } else {
                                     mensajeError = "No se pudo registrar (verifica si el correo ya existe)"

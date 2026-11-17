@@ -48,14 +48,12 @@ class MainActivity : ComponentActivity() {
                     )
                     "login" -> LoginScreen(
                         onLoginExitoso = {
-                            sessionManager.guardarSesion(true)
                             pantallaActual = "home"
                         },
                         onIrARegistro = { pantallaActual = "register" }
                     )
                     "register" -> RegisterScreen(
                         onRegistroExitoso = {
-                            sessionManager.guardarSesion(true)
                             pantallaActual = "home"
                         },
                         onVolverALogin = { pantallaActual = "login" }

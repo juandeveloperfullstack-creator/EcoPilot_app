@@ -13,28 +13,29 @@ import android.content.Context
  * @property context El contexto de la aplicación necesario para acceder a `SharedPreferences`.
  */
 class SessionManager(context: Context) {
-
-    private val prefs = context.getSharedPreferences("ecopilot_prefs", Context.MODE_PRIVATE)
+    private val prefs = context.getSharedPreferences("ecopilot_session", Context.MODE_PRIVATE)
 
     /**
      * Guarda el estado de la sesión del usuario.
      * @param estaLogueado `true` si el usuario inició sesión, `false` de lo contrario.
      */
-    fun guardarSesion(estaLogueado: Boolean) {
-        prefs.edit().putBoolean("IS_LOGGED_IN", estaLogueado).apply()
+    fun guardarSesion(token: String, nombre: String, puntos: Int) {
+        prefs.edit()
+            .putBoolean("is_llogged_in", true)
+            .putString("auth_token", token)
+            .putString("user_name", nombre)
+            .putInt("user_points", puntos)
+            .apply()
     }
 
-    /**
-     * Verifica si hay una sesión activa persistida.
-     * @return `true` si el usuario está logueado, `false` por defecto.
-     */
-    fun estaLogueado(): Boolean {
-        return prefs.getBoolean("IS_LOGGED_IN", false)
-    }
+    fun estaLogueado(): Boolean = prefs.getBoolean("is_logged_in", false)
 
-    /**
-     * Elimina los datos de sesión almacenados (Cerrar sesión).
-     */
+    fun obtenerToken(): String = prefs.getString("auth_token", "") ?: ""
+
+    fun obtenerNombre(): String = prefs.getString("user_name", "Explorador") ?: "Explorador"
+
+    fun obtenerPunto(): Int = prefs.getInt("user_points", 0)
+
     fun cerrarSesion() {
         prefs.edit().clear().apply()
     }

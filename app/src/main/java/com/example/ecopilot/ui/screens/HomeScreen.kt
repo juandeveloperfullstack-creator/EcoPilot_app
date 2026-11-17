@@ -1,0 +1,140 @@
+package com.example.ecopilot.ui.screens
+
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+
+/**
+ * **EcoPilotHomeScreen**: Pantalla principal de la aplicación.
+ *
+ * **Palabras clave / Conceptos clave:**
+ * - `LazyColumn`: Lista de desplazamiento vertical optimizada (similar a RecyclerView) que solo renderiza los elementos visibles.
+ * - `Card`: Contenedor visual de elevación y bordes redondeados para agrupar información.
+ * - `Stateful Composable`: Componente que mantiene y reacciona al estado (`seccionActual`).
+ * - `OutlinedButton`: Botón secundario con borde, utilizado para el cierre de sesión.
+ *
+ * @param modifier Modificador de diseño pasado desde el contenedor padre (Scaffold).
+ * @param onCerrarSesion Callback para limpiar la sesión y regresar al login.
+ */
+@Composable
+fun EcoPilotHomeScreen(
+    modifier: Modifier = Modifier,
+    onCerrarSesion: () -> Unit
+) {
+    var seccionActual by remember { mutableStateOf("¡Bienvenido a EcoPilot!") }
+
+    LazyColumn(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        // 1. Cabecera de Bienvenida
+        item {
+            Text(
+                text = "Tu planeta, tu misión",
+                style = MaterialTheme.typography.headlineMedium,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = "Cada acción suma. Aprende, comparte y contribuye al cambio global",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+        }
+
+        // 2. Tarjeta de Resumen y Estado
+        item {
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(
+                        text = "Progreso Ecológico",
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = "Puntos acumulados: 120 ECOs",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = seccionActual,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.secondary
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(20.dp))
+        }
+
+        // 3. Título de Secciones
+        item {
+            Text(
+                text = "Explorar EcoPilot",
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.padding(bottom = 12.dp)
+            )
+        }
+
+        // 4. Lista de Opciones de Navegación del Menú
+        item {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                BotonMenuSeccion(
+                    titulo = "Puntos de recolección",
+                    onClick = { seccionActual = "📍 Abriendo Puntos de Recolección..." }
+                )
+                BotonMenuSeccion(
+                    titulo = "Tienda y Recompensas",
+                    onClick = { seccionActual = "🎁 Abriendo Tienda y Recompensas..." }
+                )
+                BotonMenuSeccion(
+                    titulo = "Manualidades ecológicas",
+                    onClick = { seccionActual = "♻️ Abriendo Manualidades Ecológicas..." }
+                )
+                BotonMenuSeccion(
+                    titulo = "Chatbot IA",
+                    onClick = { seccionActual = "🤖 Conectando con el Chatbot IA..." }
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                OutlinedButton(
+                    onClick = { onCerrarSesion() },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(text = "Cerrar Sesión", color = MaterialTheme.colorScheme.error)
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Componente reutilizable para los botones de las diferentes secciones del menú.
+ *
+ * @param titulo Texto del botón.
+ * @param onClick Acción ejecutada al hacer clic.
+ */
+@Composable
+fun BotonMenuSeccion(titulo: String, onClick: () -> Unit) {
+    Button(
+        onClick = onClick,
+        modifier = Modifier.fillMaxWidth(),
+        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+    ) {
+        Text(
+            text = titulo,
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onPrimary
+        )
+    }
+}

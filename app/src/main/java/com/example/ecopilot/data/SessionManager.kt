@@ -21,7 +21,7 @@ class SessionManager(context: Context) {
      */
     fun guardarSesion(token: String, nombre: String, puntos: Int) {
         prefs.edit()
-            .putBoolean("is_llogged_in", true)
+            .putBoolean("is_logged_in", true)
             .putString("auth_token", token)
             .putString("user_name", nombre)
             .putInt("user_points", puntos)
@@ -34,7 +34,7 @@ class SessionManager(context: Context) {
 
     fun obtenerNombre(): String = prefs.getString("user_name", "Explorador") ?: "Explorador"
 
-    fun obtenerPunto(): Int = prefs.getInt("user_points", 0)
+    fun obtenerPuntos(): Int = prefs.getInt("user_points", 0)
 
     fun cerrarSesion() {
         prefs.edit().clear().apply()

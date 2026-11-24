@@ -54,4 +54,8 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
+    // Mapa OpenStreetMap nativo (equivalente a Leaflet sin API Key)
+    implementation("org.osmdroid:osmdroid-android:6.1.18")
+    // Ubicación GPS nativa de Android
+    implementation("com.google.android.gms:play-services-location:21.3.0")
 }

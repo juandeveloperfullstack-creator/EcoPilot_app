@@ -4,17 +4,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
 import com.example.ecopilot.data.SessionManager
-import com.example.ecopilot.ui.screens.EcoPilotHomeScreen
+import com.example.ecopilot.ui.layouts.MainLayout
 import com.example.ecopilot.ui.screens.LoginScreen
 import com.example.ecopilot.ui.screens.RegisterScreen
 import com.example.ecopilot.ui.screens.SplashScreen
 import com.example.ecopilot.ui.theme.EcoPilotTheme
-
 /**
  * **MainActivity**: Actividad principal del flujo de la aplicación EcoPilot.
  *
@@ -58,15 +54,12 @@ class MainActivity : ComponentActivity() {
                         },
                         onVolverALogin = { pantallaActual = "login" }
                     )
-                    "home" -> Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                        EcoPilotHomeScreen(
-                            modifier = Modifier.padding(innerPadding),
-                            onCerrarSesion = {
-                                sessionManager.cerrarSesion()
-                                pantallaActual = "login"
-                            }
-                        )
-                    }
+                    "home" -> MainLayout (
+                        onCerrarSesion = {
+                            sessionManager.cerrarSesion()
+                            pantallaActual = "login"
+                        }
+                    )
                 }
             }
         }

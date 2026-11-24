@@ -37,13 +37,12 @@ import kotlin.math.*
 fun PuntosRecoleccionScreen() {
     val context = LocalContext.current
 
-    // Inicializar configuración de osmdroid (obligatorio para descargar tiles)
+    // Inicializar configuración de osmdroid con User-Agent propio
     LaunchedEffect(Unit) {
-        Configuration.getInstance().load(
-            context,
-            PreferenceManager.getDefaultSharedPreferences(context)
-        )
-        Configuration.getInstance().userAgentValue = context.packageName
+        Configuration.getInstance().apply {
+            load(context, PreferenceManager.getDefaultSharedPreferences(context))
+            userAgentValue = "EcoPilot-Popayan/1.0 (Android)"
+        }
     }
 
     var puntos by remember { mutableStateOf<List<PuntoRecoleccion>>(emptyList()) }
@@ -89,14 +88,15 @@ fun PuntosRecoleccionScreen() {
         }
     }
 
-    // Cargar puntos desde Laravel (GET /api/puntos)
+    // Cargar puntos desde Laravel (GET api/puntos)
     LaunchedEffect(Unit) {
         try {
             val response = RetrofitClient.apiService.obtenerPuntos()
             if (response.isSuccessful) {
                 val lista = response.body() ?: emptyList()
-                // Filtramos los activos (o si estado_punto es null, también los mostramos)
-                puntos = lista.filter { it.estado_punto == null || it.estado_punto.equals("activo", ignoreCase = true) }
+                puntos = lista.filter {
+                    it.estado_punto == null || it.estado_punto.equals("activo", ignoreCase = true)
+                }
             } else {
                 errorMensaje = "Error al cargar puntos (${response.code()})"
             }
@@ -202,7 +202,7 @@ fun PuntosRecoleccionScreen() {
             }
         }
 
-        // Mapa interactivo OpenStreetMap
+        // Mapa interactivo con tiles WIKIMEDIA
         item {
             Card(
                 modifier = Modifier
@@ -217,7 +217,7 @@ fun PuntosRecoleccionScreen() {
                         .clip(RoundedCornerShape(16.dp)),
                     factory = { ctx ->
                         MapView(ctx).apply {
-                            setTileSource(TileSourceFactory.MAPNIK)
+                            setTileSource(TileSourceFactory.WIKIMEDIA)
                             setMultiTouchControls(true)
                             controller.setZoom(14.0)
                             controller.setCenter(centroMapa)
@@ -350,8 +350,9 @@ fun PuntosRecoleccionScreen() {
 
                         OutlinedButton(
                             onClick = {
-                                // Abre Google Maps directamente con las coordenadas del punto
-                                val uri = Uri.parse("geo:${punto.latitud},${punto.longitud}?q=${punto.latitud},${punto.longitud}(${Uri.encode(punto.nombre_lugar)})")
+                                val uri = Uri.parse(
+                                    "geo:${punto.latitud},${punto.longitud}?q=${punto.latitud},${punto.longitud}(${Uri.encode(punto.nombre_lugar)})"
+                                )
                                 val intent = Intent(Intent.ACTION_VIEW, uri)
                                 context.startActivity(intent)
                             },

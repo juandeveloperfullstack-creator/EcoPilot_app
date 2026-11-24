@@ -4,7 +4,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
-    // 10.0.2.2 es el puente directo desde el emulador Android hacia el 127.0.0.1 de tu PC
+    // 10.0.2.2 es el puente directo desde el emulador Android hacia el 127.0.0.1
     private const val BASE_URL = "http://127.0.0.1:8000/"
 
     val apiService: ApiService by lazy {
